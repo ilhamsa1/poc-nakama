@@ -1,0 +1,50 @@
+{
+  "name": "test-lit",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/test-lit",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project test-lit --web",
+  "targets": {
+    "targets": {
+      "build": {
+        "executor": "@nx/next:build",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "outputPath": "dist/test-lit"
+        },
+        "configurations": {
+          "development": {
+            "outputPath": "apps/test-lit",
+            "turbo": true
+          },
+          "production": {}
+        }
+      },
+      "serve": {
+        "executor": "@nx/next:server",
+        "defaultConfiguration": "development",
+        "options": {
+          "buildTarget": "test-lit:build",
+          "port": 2000
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "test-lit:build:development",
+            "verbose": true,
+            "dev": true,
+            "turbo": true,
+            "hostname": "0.0.0.0"
+          },
+          "production": {
+            "buildTarget": "test-lit:build:production",
+            "dev": false
+          }
+        }
+      }
+    }
+  }
+}

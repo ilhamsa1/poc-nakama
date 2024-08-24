@@ -1,0 +1,48 @@
+{
+  "name": "client",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/client",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project client --web",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/poc"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "apps/poc",
+          "turbo": true
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "poc:build",
+        "port": 5000
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "poc:build:development",
+          "verbose": true,
+          "dev": true,
+          "turbo": true,
+          "hostname": "0.0.0.0"
+        },
+        "production": {
+          "buildTarget": "poc:build:production",
+          "dev": false
+        }
+      }
+    }
+  }
+}
