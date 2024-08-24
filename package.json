@@ -53,9 +53,13 @@
     "@lit-protocol/contracts-sdk": "^6.4.4",
     "@lit-protocol/lit-node-client": "^6.4.4",
     "@lit-protocol/lit-node-client-nodejs": "^6.4.4",
+    "@lit-protocol/pkp-client": "^6.4.4",
     "axios": "^1.6.0",
+    "ethers": "^5.7.2",
     "express": "~4.18.1",
     "next": "14.2.3",
+    "node-localstorage": "^3.0.5",
+    "nostr-tools": "^2.7.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "tslib": "^2.3.0"

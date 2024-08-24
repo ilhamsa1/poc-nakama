@@ -11,17 +11,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "baseUrl": ".",
+    // "baseUrl": ".",
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
+    // "paths": {
+    //   "@/*": [
+    //     "./src/*"
+    //   ]
+    // },
     "types": [
       "jest",
       "node"

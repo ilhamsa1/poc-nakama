@@ -1,0 +1,19 @@
+{
+  "name": "lit-protocol",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "lit-protocol/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/lit-protocol",
+        "main": "lit-protocol/src/index.ts",
+        "tsConfig": "lit-protocol/tsconfig.lib.json",
+        "assets": ["lit-protocol/*.md"]
+      }
+    }
+  }
+}

@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@poc/lit-protocol": ["lit-protocol/src/index.ts"],
+      "@poc/lit-protocol/server-side": ["lit-protocol/src/lib/server-side/index.ts"],
+      "@poc/lit-protocol/common": ["lit-protocol/src/lib/common/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
