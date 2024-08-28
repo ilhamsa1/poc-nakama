@@ -1,4 +1,4 @@
-import { getEthereumSignerServerSide, getLitNodeClientServerSide } from '@poc/lit-protocol/server-side';
+import { combineKeys, getEthereumSignerServerSide, getLitNodeClientServerSide } from '@poc/lit-protocol/server-side';
 import { decryptData2, encryptData2 } from '@poc/lit-protocol/common';
 
 
@@ -11,12 +11,18 @@ export const test = async () => {
         textData: 'gegeg',
     })
 
-    const result = await decryptData2({
+    // const result = await decryptData2({
+    //     ethersSigner,
+    //     litNodeClient,
+    //     ciphertext,
+    //     dataToEncryptHash,
+    // })
+
+    const keys = await combineKeys({
         ethersSigner,
         litNodeClient,
-        ciphertext,
-        dataToEncryptHash,
     })
 
-    return result
+    console.log("keys ddddddd", keys)
+    return keys
 }

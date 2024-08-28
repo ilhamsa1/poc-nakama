@@ -195,10 +195,12 @@ export async function getLitNodeClient() {
 }
 
 export const getEthereumSigner = async () => {
+  console.log("Connecting to metamask...");
     if (!window?.ethereum) {
       console.error("No metamask");
       return null;
     }
+
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
     const ethersSigner = provider.getSigner();
@@ -317,71 +319,71 @@ export const signMessage = async (message: string) => {
 // })();
 // `;
 
-const litActionCode = `
-const go = async () => {  
-  const url = "https://api.weather.gov/gridpoints/TOP/31,80/forecast";
-  const resp = await fetch(url).then((response) => response.json());
-  const temp = resp.properties.periods[0].temperature;
+// const litActionCode = `
+// const go = async () => {  
+//   const url = "https://api.weather.gov/gridpoints/TOP/31,80/forecast";
+//   const resp = await fetch(url).then((response) => response.json());
+//   const temp = resp.properties.periods[0].temperature;
 
-  // only sign if the temperature is above 60.  if it's below 60, exit.
-  if (temp < 60) {
-    return;
-  }
+//   // only sign if the temperature is above 60.  if it's below 60, exit.
+//   if (temp < 60) {
+//     return;
+//   }
   
-  // this requests a signature share from the Lit Node
-  // the signature share will be automatically returned in the HTTP response from the node
-  // all the params (toSign, publicKey, sigName) are passed in from the LitJsSdk.executeJs() function
-  const sigShare = await LitActions.signEcdsa({ toSign, publicKey , sigName });
+//   // this requests a signature share from the Lit Node
+//   // the signature share will be automatically returned in the HTTP response from the node
+//   // all the params (toSign, publicKey, sigName) are passed in from the LitJsSdk.executeJs() function
+//   const sigShare = await LitActions.signEcdsa({ toSign, publicKey , sigName });
 
-    return Lit.Actions.setResponse({ response: JSON.stringify(sigShare) });
-  };
+//     return Lit.Actions.setResponse({ response: JSON.stringify(sigShare) });
+//   };
 
-go();
-`;
+// go();
+// `;
 
-const codeEncrypt = `
-(async () => {
-    const LIT_PREFIX = 'lit_';
+// const codeEncrypt = `
+// (async () => {
+//     const LIT_PREFIX = 'lit_';
 
-    const result = await Lit.Actions.runOnce(
-        { waitForResponse: true, name: 'encryptedPrivateKey' },
-        async () => {
-            // BIP-32 secret key generation logic
-            const bip32 = require('bip32');
-            const bitcoin = require('bitcoinjs-lib'); // You may need this for networks and other utilities
+//     const result = await Lit.Actions.runOnce(
+//         { waitForResponse: true, name: 'encryptedPrivateKey' },
+//         async () => {
+//             // BIP-32 secret key generation logic
+//             const bip32 = require('bip32');
+//             const bitcoin = require('bitcoinjs-lib'); // You may need this for networks and other utilities
             
-            const network = bitcoin.networks.bitcoin; // or use testnet: bitcoin.networks.testnet
-            const seed = bitcoin.crypto.sha256('some random seed'); // Replace with an actual seed generation method
-            const root = bip32.fromSeed(seed, network);
-            const generatedPrivateKey = root.toWIF(); // Get the private key in Wallet Import Format (WIF)
+//             const network = bitcoin.networks.bitcoin; // or use testnet: bitcoin.networks.testnet
+//             const seed = bitcoin.crypto.sha256('some random seed'); // Replace with an actual seed generation method
+//             const root = bip32.fromSeed(seed, network);
+//             const generatedPrivateKey = root.toWIF(); // Get the private key in Wallet Import Format (WIF)
 
-            const private_key = \`\${LIT_PREFIX}\${generatedPrivateKey}\`;
+//             const private_key = \`\${LIT_PREFIX}\${generatedPrivateKey}\`;
 
-            const utf8Encode = new TextEncoder();
-            const encodedPrivateKey = utf8Encode.encode(
-               private_key  // For enhanced security, you should prepend all generated private keys with "lit_"
-            );
+//             const utf8Encode = new TextEncoder();
+//             const encodedPrivateKey = utf8Encode.encode(
+//                private_key  // For enhanced security, you should prepend all generated private keys with "lit_"
+//             );
 
-            const { ciphertext, dataToEncryptHash } = await Lit.Actions.encrypt({
-                accessControlConditions, // This should be passed into the Lit Action
-                to_encrypt: encodedPrivateKey,
-            });
-            return JSON.stringify({
-                ciphertext,
-                dataToEncryptHash,
-                // Return the public key for the generated private key as a string.
-                publicKey: root.publicKey.toString('hex'), // Get the public key as a hex string
-            });
-        }
-    );
+//             const { ciphertext, dataToEncryptHash } = await Lit.Actions.encrypt({
+//                 accessControlConditions, // This should be passed into the Lit Action
+//                 to_encrypt: encodedPrivateKey,
+//             });
+//             return JSON.stringify({
+//                 ciphertext,
+//                 dataToEncryptHash,
+//                 // Return the public key for the generated private key as a string.
+//                 publicKey: root.publicKey.toString('hex'), // Get the public key as a hex string
+//             });
+//         }
+//     );
 
-    // Any other code you'd like to run...
+//     // Any other code you'd like to run...
 
-    Lit.Actions.setResponse({
-        response: result,
-    });
-})();
-`;
+//     Lit.Actions.setResponse({
+//         response: result,
+//     });
+// })();
+// `;
 
 // const code = `
 // (async () => {
@@ -429,7 +431,7 @@ const _message = new Uint8Array(
 console.log("message-------------", _message);
 
   const res = await litNodeClient.executeJs({
-      code: litActionCode,
+      code,
       sessionSigs, // your session
       jsParams: {
         publicKey: '0x04ab898b2a19e08a57b958435fbf567addbfa74c74a243407c1e30e1bbfa87f116987c012698cb4d02bada37def4accec0c15af67822648b3a0304750f8957a21c',

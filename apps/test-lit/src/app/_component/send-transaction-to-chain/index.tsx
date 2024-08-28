@@ -1,6 +1,6 @@
 'use client';
 import { useState } from "react";
-import { signMessage } from "@poc/lit-protocol";  
+import { combineKeys, signMessage } from "@poc/lit-protocol";  
 import { ExecuteJsResponse } from "@lit-protocol/types";
 
 const EncryptDecrypt = () => {
@@ -9,7 +9,8 @@ const EncryptDecrypt = () => {
   const [decryptionData, setdecryptionData] = useState<ExecuteJsResponse>({ response: '', logs: '', signatures: '' });
   
   const encrypt = async () => {
-    signMessage('test')
+    // signMessage('test')
+    combineKeys()
   }
 
   // const decrypt = async () => {

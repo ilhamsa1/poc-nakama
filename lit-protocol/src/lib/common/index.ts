@@ -19,12 +19,15 @@ import {
 
 import * as ethers from "ethers";
 import { AuthCallback } from "@lit-protocol/types";
+import { VerifiedEvent, verifyEvent } from "nostr-tools";
 
-declare global {
-  interface Window{
-    ethereum: ethers.providers.ExternalProvider;
-  }
-}
+// declare global {
+//   interface Window{
+//     ethereum: ethers.providers.ExternalProvider;
+//   }
+// }
+
+
 
 // interface LitConnection {
 //    litNodeClient: LitJsSdk.LitNodeClient;
@@ -191,3 +194,30 @@ type EncryptionParams = {
     return res;
   };
   
+
+  export interface Context {
+    litNodeClient: LitNodeClient,
+    sessionSigs: ethers.ethers.Wallet,
+  }
+
+export const verifyMessageNoStr = async ({ litNodeClient, sessionSigs }: Context, message: VerifiedEvent) => {
+  
+  const code = `(async () => {
+      const isValid = verifyEvent(message);
+      Lit.Actions.setResponse({ response: {
+        isValid
+      } });
+    })();`;
+  
+    const res = await litNodeClient.executeJs({
+      code,
+      sessionSigs,
+      jsParams: {
+        // accessControlConditions,
+        message,
+      },
+    });
+  
+    console.log("decrypted content sent from lit action:", res);
+    return res;
+  }

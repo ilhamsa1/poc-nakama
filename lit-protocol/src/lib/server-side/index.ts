@@ -7,7 +7,21 @@ import { LocalStorage } from "node-localstorage";
 import { LIT_RPC } from "@lit-protocol/constants";
 import * as ethers from "ethers";
 import { LitContracts } from "@lit-protocol/contracts-sdk";
+import * as fs from 'fs';
+import * as path from 'path';
+import { getSessionSigs } from "../common";
 
+type DecryptionParams = {
+  litNodeClient: any;
+  ethersSigner: any;
+};
+
+const filePath = path.join(__dirname, './bundled.js');
+console.log("reading bundled.js file...", filePath);
+
+const litActionCode = fs.readFileSync('./bundled.js', 'utf8');
+
+console.log("litActionCodexxxxxxxxxxxxx", litActionCode);
 export async function getLitNodeClientServerSide() {
     const litNodeClient = new LitJsSdk.LitNodeClientNodeJs({
         alertWhenUnauthorized: false,
@@ -50,3 +64,44 @@ export async function getLitNodeClientServerSide() {
     await client.connect();
   }
   
+
+
+  export const combineKeys = async ({ litNodeClient, ethersSigner }: DecryptionParams) => {
+    const chain = 'ethereum';
+    const sessionSigs = await getSessionSigs(litNodeClient, ethersSigner);
+    const cc = await litActionCode;
+    console.log('cccccccccccccccccccccccccccccccccccccccccccccc', cc)
+    const code = `(async () => {
+      const resp = await Lit.Actions.decryptAndCombine({
+        accessControlConditions,
+        ciphertext,
+        dataToEncryptHash,
+        authSig: null,
+        chain: 'ethereum',
+      });
+    
+      Lit.Actions.setResponse({ response: resp });
+    })();`;
+  
+    const accessControlConditions = [
+      {
+        contractAddress: '',
+        standardContractType: '',
+        chain,
+        method: 'eth_getBalance',
+        parameters: [':userAddress', 'latest'],
+        returnValueTest: {
+          comparator: '>=',
+          value: '0',
+        },
+      },
+    ];
+    console.log('ddddddddddddddddddddddddddddddd')
+    const res = await litNodeClient.executeJs({
+      code: cc,
+      sessionSigs,
+    });
+  
+    console.log("decrypted content sent from lit action:", res);
+    return res;
+  };
